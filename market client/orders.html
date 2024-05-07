@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Admin Panel</title>
+</head>
+<body>
+
+  <div class="admin-container">
+    <h2>Orders</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Buyer</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id = "orders">
+        <!-- Здесь будут подгружаться заказы динамически -->
+        <tr>
+          <td>1</td>
+          <td>Product 1</td>
+          <td>2</td>
+          <td>$39.98</td>
+          <td>Shipped</td>
+          <td>Shipped</td>
+          <td>Shipped</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Product 3</td>
+          <td>1</td>
+          <td>$24.99</td>
+          <td>Processing</td>
+          <td>Shipped</td>
+        </tr>
+        <!-- Дополнительные строки заказов -->
+      </tbody>
+    </table>
+    <h2>Add Product</h2>
+    <form id="addProductForm" method="post" action="http://localhost:3000/addProduct">
+      <label for="productName">Product Name:</label>
+      <input type="text" id="productName" name="name" required>
+
+      <label for="productPrice">Product Price:</label>
+      <input type="number" id="productPrice" name= "price" step="0.01" required>
+
+      <label for="productAvailability">Availability:</label>
+      <select id="productAvailability" name="availability" required>
+        <option value=1>In Stock</option>
+        <option value=0>Out of Stock</option>
+      </select>
+
+      <label for="productCategories">Categories:</label>
+      <select id="productCategories" name="category" required>
+
+      </select>
+      <button type="submit">Add Product</button>
+    </form>
+
+    <h2>Delete Product</h2>
+    <form id="deleteProductForm" method="post" action="http://localhost:3000/deleteProduct">
+      <label for="productId">Product ID:</label>
+      <input type="number" id="productId" name="productID" required>
+
+      <button type="submit">Delete Product</button>
+    </form>
+
+    <h2>Update Product</h2>
+    <form id="updateProductForm" method="post" action="http://localhost:3000/updateProduct">
+      <label for="productId">Product ID:</label>
+      <input 
+       name="productID" onchange ="productLoad()" required>
+
+      <label for="productName">Product Name:</label>
+      <input type="text" id="productNameUpdate" name="name" required>
+
+      <label for="productPrice">Product Price:</label>
+      <input type="number" id="productPriceUpdate" name="price" step="0.01" required>
+
+      <label for="productAvailabilityUpdate">Availability:</label>
+      <select id="productAvailabilityUpdate" name="availability" required>
+        <option value=1>In Stock</option>
+        <option value=0>Out of Stock</option>
+      </select>
+
+      <label for="productCategoriesUpdate">Categories:</label>
+      <select id="productCategoriesUpdate" name="category" required>
+
+      </select>
+
+      <button type="submit">Update Product</button>
+    </form>
+    <h3>Сумма всех товаров: <span id="sum"></span></h3>
+    <ol id="groupBy">
+      
+    </ol>
+    <h3>Самый дорогой товар: <span id="max"></span></h3>
+    <h3>Самый дешевый товар: <span id="min"></span></h3>
+
+  </div>
+  </div>
+  <script src="orders.js"></script>
+</body>
+</html>
