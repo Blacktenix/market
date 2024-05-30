@@ -12,6 +12,13 @@ fetch('http://localhost:3000/products')
             const button = document.createElement('button')
             const input = document.createElement('input')
             input.type = 'number'
+            input.min = 1
+            input.value = 1
+            input.addEventListener('change',()=>{
+                if (input.value == 0){
+                input.value = 1
+            }
+            })
             const div = document.createElement('div')
             div.appendChild(button)
             button.innerText = "Add to Cart"
@@ -45,10 +52,10 @@ function getCart() {
     }
 }
 
-function addProductToCart(productId, count) {
+function addProductToCart(product, count) {
     const cart = getCart();
-    const product = {productId,count}
-    cart.push(product)
+    const p = {product,count}
+    cart.push(p)
     setCookie("cart",JSON.stringify(cart),2)
 
 }

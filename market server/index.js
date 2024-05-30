@@ -100,36 +100,64 @@ app.get('/orders', (req, res) => {
     });
 });
 
-app.post('/addOrder', (req, res) => {
-    let {buyer, details} = req.body
-    console.log(req.body)
-    connection.query(`INSERT INTO orders (buyer, order_date) VALUES (?, NOW())`,[buyer], (error, results) => {
-        if (error) {
-            res.status(500).json({ error });
-            return;
+// app.post('/addOrder', (req, res) => {
+//     let {buyer, details} = req.body
+//     console.log(req.body)
+//     connection.query(`INSERT INTO orders (buyer, order_date) VALUES (?, NOW())`,[buyer], (error, results) => {
+//         if (error) {
+//             res.status(500).json({ error });
+//             return;
+//         }
+//         console.log(results);
+//         // res.json(results);
+//         connection.query(`SELECT MAX(orderID) FROM orders`, (error, results) => {
+//             if (error) {
+//                 res.status(500).json({ error });
+//                 return;
+//             }
+//             console.log(results);
+//             res.json(results);
+//             for (let i of details){
+//                 connection.query(`INSERT INTO order_details (\`order\`, product, count) VALUES (?,?,?)`,[results[0]['MAX(orderID)'], i.product, i.count], (error, results) => {
+//                     if (error) {
+//                         res.status(500).json({ error });
+//                         return;
+//                     }
+//                     //res.json(results);
+//                 });
+//             }
+//         });
+//     });
+    
+    
+// });
+
+app.post('/addOrder', async (req, res) => {
+    const { buyer, details } = req.body;
+    console.log(req.body);
+
+    try {
+        await connection.beginTransaction();
+        const [orderResult] = await connection.query(`INSERT INTO orders (buyer, order_date) VALUES (?, NOW())`, [buyer]);
+        console.log(orderResult);
+
+        const [maxOrderResult] = await connection.query(`SELECT MAX(orderID) AS maxOrderID FROM orders`);
+        console.log(maxOrderResult);
+
+        const orderID = maxOrderResult[0].maxOrderID;
+
+        for (const item of details) {
+            await connection.query(`INSERT INTO order_details (\`order\`, product, count) VALUES (?, ?, ?)`, [orderID, item.product, item.count]);
         }
-        console.log(results);
-        // res.json(results);
-        connection.query(`SELECT MAX(orderID) FROM orders`, (error, results) => {
-            if (error) {
-                res.status(500).json({ error });
-                return;
-            }
-            console.log(results);
-            res.json(results);
-            for (let i of details){
-                connection.query(`INSERT INTO order_details (\`order\`, product, count) VALUES (?,?,?)`,[results[0]['MAX(orderID)'], i.product, i.count], (error, results) => {
-                    if (error) {
-                        res.status(500).json({ error });
-                        return;
-                    }
-                    //res.json(results);
-                });
-            }
-        });
-    });
-    
-    
+
+        res.json({ success: true, orderID });
+        await connection.commit();
+        console.log("Transaction commit")
+    } catch (error) {
+        await connection.rollback();
+        console.error(error);
+        res.status(500).json({ error });
+    }
 });
 
 app.get('/categories', (req, res) => {

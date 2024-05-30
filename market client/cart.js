@@ -16,7 +16,7 @@ function getCookie(cname) {
     let name = cname + "=";
     let ca = document.cookie.split(';');
     for(let i = 0; i < ca.length; i++) {
-      let c = ca[i];
+      let c = ca[i]; 
       while (c.charAt(0) == ' ') {
         c = c.substring(1);
       }
@@ -33,16 +33,29 @@ function setCookie(cname, cvalue, exdays) {
   let expires = "expires="+d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-
-cart.forEach(({productId, count})=>{
+let sum = 0;
+cart.forEach(({product, count})=>{
   const productDiv = document.createElement('div');
-  productDiv.innerHTML = 
-    `<h3>Product 1</h3>
-    <span class= "count">${count}</span>
-    <span class="price">$19.99</span>
-    <button class="remove-btn">Remove</button>`
-  items.appendChild(productDiv)
+  fetch('http://localhost:3000/products')
+    .then(response => response.json())
+    .then(products => {
+        // Clear existing content
+        const p = products.find((p) => p.productID == product)
+        productDiv.innerHTML = 
+        `<h3>${p.name}</h3>
+        <span class= "count">Count: ${count}</span>
+        <span class="price">Price: ${p.price*count} $</span>
+        <button class="remove-btn">Remove</button>`
+        items.appendChild(productDiv)
+        sum += p.price*count
+        const total = document.getElementById('price')
+        total.innerText = sum + " $"
+        console.log(total)
+      })
+  
+  
 })
+
 
 const clearCartBtn = document.querySelector('.clear-cart-btn');
 
@@ -54,4 +67,40 @@ function clearCart() {
   setCookie('cart', JSON.stringify([]));
   window.location.reload()
 }
+
+const CheckoutBtn = document.querySelector('.checkout-btn');
+
+CheckoutBtn.addEventListener('click', function() {
+  Checkout();
+  
+});
+
+
+function Checkout() {
+  const buyer = document.getElementById("user").value
+  const details = getCart()
+  const data = {buyer,details}
+  
+fetch('http://localhost:3000/addOrder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => console.log(data));
+  
+  window.location.href = 'http://127.0.0.1:5500';
+
+  CheckoutBtn.disabled = true;
+  CheckoutBtn.style.backgroundColor = '#ccc';
+  CheckoutBtn.style.cursor = 'default';
+  setTimeout(function() {
+    CheckoutBtn.disabled = false;
+    CheckoutBtn.style.backgroundColor = '#007bff';
+    CheckoutBtn.style.cursor = 'pointer';
+  }, 3000);
+}
+
 

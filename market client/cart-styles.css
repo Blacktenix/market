@@ -12,6 +12,45 @@ body {
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+
+  .site-header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+  }
+  
+  .site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 20px 0 20px;
+  }
+  
+  .site-title {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .site-nav li {
+    margin-left: 20px;
+  }
+  
+  .site-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .site-nav a:hover {
+    text-decoration: underline;
+  }
   
   h2 {
     text-align: center;
@@ -21,10 +60,12 @@ body {
     margin-top: 20px;
   }
   
-  .cart-item {
+  .cart-items div {
     display: flex;
     border-bottom: 1px solid #ddd;
     padding: 10px;
+    flex-direction: column;
+    align-items: start;
   }
   
   .cart-item img {
