@@ -91,7 +91,7 @@ fetch('http://localhost:3000/addOrder', {
   .then(response => response.json())
   .then(data => console.log(data));
   
-  window.location.href = 'http://127.0.0.1:5500';
+  window.location.href = window.location.href.split('cart.html')[0] + 'index.html';
 
   CheckoutBtn.disabled = true;
   CheckoutBtn.style.backgroundColor = '#ccc';
